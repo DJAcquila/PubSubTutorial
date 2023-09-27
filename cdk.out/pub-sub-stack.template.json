@@ -1,0 +1,263 @@
+{
+ "Resources": {
+  "dlq09C78ACC": {
+   "Type": "AWS::SQS::Queue",
+   "Properties": {
+    "MessageRetentionPeriod": 86400
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "pub-sub-stack/dlq/Resource"
+   }
+  },
+  "sqsqueueE70CFDBB": {
+   "Type": "AWS::SQS::Queue",
+   "Properties": {
+    "RedrivePolicy": {
+     "deadLetterTargetArn": {
+      "Fn::GetAtt": [
+       "dlq09C78ACC",
+       "Arn"
+      ]
+     },
+     "maxReceiveCount": 1
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "pub-sub-stack/sqs-queue/Resource"
+   }
+  },
+  "sqsqueuePolicyC27BD6E4": {
+   "Type": "AWS::SQS::QueuePolicy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sqs:SendMessage",
+       "Condition": {
+        "ArnEquals": {
+         "aws:SourceArn": {
+          "Ref": "snstopic2C4AE3C1"
+         }
+        }
+       },
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "sns.amazonaws.com"
+       },
+       "Resource": {
+        "Fn::GetAtt": [
+         "sqsqueueE70CFDBB",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Queues": [
+     {
+      "Ref": "sqsqueueE70CFDBB"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "pub-sub-stack/sqs-queue/Policy/Resource"
+   }
+  },
+  "sqsqueuepubsubstacksnstopicFA3E026B03FC3957": {
+   "Type": "AWS::SNS::Subscription",
+   "Properties": {
+    "Endpoint": {
+     "Fn::GetAtt": [
+      "sqsqueueE70CFDBB",
+      "Arn"
+     ]
+    },
+    "Protocol": "sqs",
+    "TopicArn": {
+     "Ref": "snstopic2C4AE3C1"
+    }
+   },
+   "DependsOn": [
+    "sqsqueuePolicyC27BD6E4"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "pub-sub-stack/sqs-queue/pubsubstacksnstopicFA3E026B/Resource"
+   }
+  },
+  "snstopic2C4AE3C1": {
+   "Type": "AWS::SNS::Topic",
+   "Metadata": {
+    "aws:cdk:path": "pub-sub-stack/sns-topic/Resource"
+   }
+  },
+  "mylambdaServiceRoleEF0A78B7": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "pub-sub-stack/my-lambda/ServiceRole/Resource"
+   }
+  },
+  "mylambdaServiceRoleDefaultPolicyBDADF1CE": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "sqs:ReceiveMessage",
+        "sqs:ChangeMessageVisibility",
+        "sqs:GetQueueUrl",
+        "sqs:DeleteMessage",
+        "sqs:GetQueueAttributes"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "sqsqueueE70CFDBB",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "mylambdaServiceRoleDefaultPolicyBDADF1CE",
+    "Roles": [
+     {
+      "Ref": "mylambdaServiceRoleEF0A78B7"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "pub-sub-stack/my-lambda/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "mylambdaE03B2284": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-254152609012-us-west-2",
+     "S3Key": "9b2d82150abf23ace24f6b476e8d1ec7fd891ff0d8aacd4e150d3b2a0a432310.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1"
+     }
+    },
+    "Handler": "index.main",
+    "MemorySize": 1024,
+    "Role": {
+     "Fn::GetAtt": [
+      "mylambdaServiceRoleEF0A78B7",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs16.x",
+    "Timeout": 5
+   },
+   "DependsOn": [
+    "mylambdaServiceRoleDefaultPolicyBDADF1CE",
+    "mylambdaServiceRoleEF0A78B7"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "pub-sub-stack/my-lambda/Resource",
+    "aws:asset:path": "asset.9b2d82150abf23ace24f6b476e8d1ec7fd891ff0d8aacd4e150d3b2a0a432310",
+    "aws:asset:is-bundled": true,
+    "aws:asset:property": "Code"
+   }
+  },
+  "mylambdaSqsEventSourcepubsubstacksqsqueue7F4E74B1CCD8E873": {
+   "Type": "AWS::Lambda::EventSourceMapping",
+   "Properties": {
+    "BatchSize": 5,
+    "EventSourceArn": {
+     "Fn::GetAtt": [
+      "sqsqueueE70CFDBB",
+      "Arn"
+     ]
+    },
+    "FunctionName": {
+     "Ref": "mylambdaE03B2284"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "pub-sub-stack/my-lambda/SqsEventSource:pubsubstacksqsqueue7F4E74B1/Resource"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/2VQy07DMBD8Fu7Otipw6LFFcANBwj1ynKXaPOyQtYuQ5X+v7ZQgxMWzMx7PWLuD/T1sb+QXF6rti4Ea8JWVqhdRqj1/Mvg3hw7Fw4dehny+moHU9youNAjW0V+5htVMkyWjk+MPfzcTqaTmIYhBjk0ra21a7BheMjw5rbKZ5Ai+NENuz/jbu1be1pIZLcMhQeRwdKpHe5SM13jw8cGa+nhGbSvjZoXPcppIn1LefzUEUSJnReTsuJjT1f1zEUT6OXS8Oe+2cBdX2TFRMTttaUQoF7wAiOuhaGYBAAA="
+   },
+   "Metadata": {
+    "aws:cdk:path": "pub-sub-stack/CDKMetadata/Default"
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}
