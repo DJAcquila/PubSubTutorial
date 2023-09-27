@@ -27,8 +27,8 @@ npx aws-cdk destroy
 6. Invoke lambda with
 
 ```bash
-aws sns publish --profile admin --region us-west-2  \
-    --subject "Just testing 🚀" \
+aws sns publish \
+    --subject "Test" \
     --message "{ \"number1\": 2, \"number2\": 3, \"operation\": \"+\"}" \
     --topic-arn "<GENERATED_TOPIC_ARN>"
 ```

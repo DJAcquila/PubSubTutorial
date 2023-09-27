@@ -1,21 +1,21 @@
 {
   "version": "34.0.0",
   "files": {
-    "9b2d82150abf23ace24f6b476e8d1ec7fd891ff0d8aacd4e150d3b2a0a432310": {
+    "be3c6528b6314dfd877907e216e3f48f6059ed86d99c6a0fd05a9408b03e40e2": {
       "source": {
-        "path": "asset.9b2d82150abf23ace24f6b476e8d1ec7fd891ff0d8aacd4e150d3b2a0a432310",
+        "path": "/Users/acquilasantosrocha/Workplace/aws-tutorial/PubSubAws",
         "packaging": "zip"
       },
       "destinations": {
         "254152609012-us-west-2": {
           "bucketName": "cdk-hnb659fds-assets-254152609012-us-west-2",
-          "objectKey": "9b2d82150abf23ace24f6b476e8d1ec7fd891ff0d8aacd4e150d3b2a0a432310.zip",
+          "objectKey": "be3c6528b6314dfd877907e216e3f48f6059ed86d99c6a0fd05a9408b03e40e2.zip",
           "region": "us-west-2",
           "assumeRoleArn": "arn:${AWS::Partition}:iam::254152609012:role/cdk-hnb659fds-file-publishing-role-254152609012-us-west-2"
         }
       }
     },
-    "98f034a8e0d949bca930f18797daad3d7403e30c6dcdf372492578a350197854": {
+    "06682e38f231b9b5887a410fd59f927ac1d269e00ef91cf9d77271bac509d906": {
       "source": {
         "path": "pub-sub-stack.template.json",
         "packaging": "file"
@@ -23,7 +23,7 @@
       "destinations": {
         "254152609012-us-west-2": {
           "bucketName": "cdk-hnb659fds-assets-254152609012-us-west-2",
-          "objectKey": "98f034a8e0d949bca930f18797daad3d7403e30c6dcdf372492578a350197854.json",
+          "objectKey": "06682e38f231b9b5887a410fd59f927ac1d269e00ef91cf9d77271bac509d906.json",
           "region": "us-west-2",
           "assumeRoleArn": "arn:${AWS::Partition}:iam::254152609012:role/cdk-hnb659fds-file-publishing-role-254152609012-us-west-2"
         }

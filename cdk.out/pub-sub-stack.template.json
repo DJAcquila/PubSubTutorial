@@ -169,7 +169,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-254152609012-us-west-2",
-     "S3Key": "9b2d82150abf23ace24f6b476e8d1ec7fd891ff0d8aacd4e150d3b2a0a432310.zip"
+     "S3Key": "be3c6528b6314dfd877907e216e3f48f6059ed86d99c6a0fd05a9408b03e40e2.zip"
     },
     "Environment": {
      "Variables": {
@@ -193,7 +193,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "pub-sub-stack/my-lambda/Resource",
-    "aws:asset:path": "asset.9b2d82150abf23ace24f6b476e8d1ec7fd891ff0d8aacd4e150d3b2a0a432310",
+    "aws:asset:path": "/Users/acquilasantosrocha/Workplace/aws-tutorial/PubSubAws",
     "aws:asset:is-bundled": true,
     "aws:asset:property": "Code"
    }
